@@ -1,3 +1,7 @@
+# Setting up NixOs in Hetzner
+
+Look in [Hetzner.md](./Hetzner.md)
+
 # Setting up NixOs in a Proxmox VM
 
 Assuming that there is already access to a Proxmox instance, ideally in a LAN for low latencies.
