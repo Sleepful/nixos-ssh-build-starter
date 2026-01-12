@@ -1,9 +1,10 @@
 NAME := "nix"
 
 delete:
-	ssh {{NAME}} "rm -f /etc/nixos/*"
+	ssh {{NAME}} "rm -rf /etc/nixos/*"
+
 copy:
-	scp -r ./*.nix root@{{NAME}}:/etc/nixos
+	rsync -av --include='src/' --include='*.nix' --exclude='*' --exclude='.git/*' . root@{{NAME}}:/etc/nixos
 
 sync: delete copy
 
