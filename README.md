@@ -42,8 +42,9 @@ The initial config is just this:
 
 By cloning this repo locally and using the commands in the [justfile](https://github.com/casey/just), easily write the config on your local machine and copy it over to the NixOs Proxmox.
 
-
 You can confirm that the configuration has been applied just by running `tree`, if `tree` command is found, that means configuartion was successful.
+
+> Note: in the `justfile` the `NAME := "nix"` determines the `ssh` profile that is used, make sure that it matches your configuration and update it if needed.
 
 # Workflow
 
