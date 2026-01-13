@@ -1,23 +1,11 @@
 # Encrypting secrets
 
-This can be done with `agenix` on the local machine where one is writing the nixos config.
+I am using `sops` to encrypt (and decrypt) secrets on my local machine. `agenix` is used in the target NixOs machine to decrypt the secrets. 
 
-However, given that my local system is not NixOs, I decided to use `age` to create the encrypted files.
-
-> If you prefer to use `agenix`, go ahead, creating secrets is explained clearly on the manual.
 > The target NixOs system still uses `agenix` to decrypt the secrets.
+> `agenix` can be used alone in the local machine instead of `sops` & `age`, if you prefer to do that, refer to `agenix` docs.
 
-## Encrypting with `age`
-
-Make sure `age` is installed and:
-
-```
-age -r "ssh-ed25519 PUB-KEY" -o secret.age plaintext.txt
-```
-
-Here, the target machine that will run the configuration (therefore decrypt the secrets), needs to have the private counter-part to PUB-KEY.
-
-### Avoiding the temporary file
+## Encrypting with `sops`
 
 Use [`sops`](https://github.com/getsops/sops) to open a file in the terminal with your `$EDITOR` without writing it to disk, and only creating the encrypted version:
 
@@ -36,6 +24,16 @@ creation_rules:
     # or if native age keys are preferred (age-keygen)
     - age: age123...
 ```
+
+## Encrypting without `sops`
+
+It is possible to use `age` without installing `sops`, it is more rudimentary but also an option. Make sure [`age`](https://github.com/FiloSottile/age) is installed and:
+
+```
+age -r "ssh-ed25519 PUB-KEY" -o secret.age plaintext.txt
+```
+
+Here, the target machine that will run the configuration (therefore decrypt the secrets), needs to have the private counter-part to PUB-KEY. With this method it becomes necessary to deal with the additional `plaintext.txt` temporary file, which I find annoying.
 
 ## Decrypting
 
@@ -60,6 +58,27 @@ SOPS_AGE_SSH_PRIVATE_KEY_FILE=~/.ssh/id_ed25519_my_custom_key sops secret.age
 ```
 
 Or with a native age key, use `SOPS_AGE_KEY` env var. More info in the [official docs](https://github.com/getsops/sops?tab=readme-ov-file#23encrypting-using-age).
+
+# Using secrets in target NixOs
+
+From the [`agenix`](https://github.com/ryantm/agenix?tab=readme-ov-file#tutorial) docs:
+
+Reference secret file in `age.secrets` key:
+
+```nix
+{
+  age.secrets.my_secret_1.file = ../secrets/secret1.age;
+}
+```
+
+And reference them in the nix modules:
+```nix
+{
+  users.users.user1 = {
+    isNormalUser = true;
+    hashedPasswordFile = config.age.secrets.my_secret_1.path;
+};
+```
 
 # Backup up the keys that can decrypt the secrets
 
