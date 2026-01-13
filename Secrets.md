@@ -25,6 +25,8 @@ creation_rules:
     - age: age123...
 ```
 
+> Note: The public key is used to encrypt. Its private counter-part must be available in the target machine to decrypt the secrets.
+
 ## Encrypting without `sops`
 
 It is possible to use `age` without installing `sops`, it is more rudimentary but also an option. Make sure [`age`](https://github.com/FiloSottile/age) is installed and:
