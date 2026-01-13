@@ -58,3 +58,8 @@ The goal of this workflow is to iterate on a NixOs config that will  be deployed
   - Why build it twice? Well, one could go straight for the remote VPC, but I prefer going for local first to avoid the `ssh` latency while iterating on the config.
   - Alternatively if the remote machine does not have the resources to handle `nixos-rebuild switch`, one could upload the finished build from local NixOs to remote NixOs with `nix-copy-closure` (run from the local) + `"$SERVER_PROFILE/bin/switch-to-configuration switch"` (run from the remote). These commands are complex and reading the manual is going to be a requisite to use them properly.
 
+# Secrets
+
+Secrets in NixOs are a bit tricky: You want to create encrypted secrets when writing the configuration, but the secrets must be decrypted when the target NixOs machine runs the configuration.
+
+Look in [Secrets.md](./Secrets.md)
