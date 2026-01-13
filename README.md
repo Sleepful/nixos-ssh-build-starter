@@ -44,3 +44,16 @@ By cloning this repo locally and using the commands in the [justfile](https://gi
 
 
 You can confirm that the configuration has been applied just by running `tree`, if `tree` command is found, that means configuartion was successful.
+
+# Workflow
+
+The goal of this workflow is to iterate on a NixOs config that will  be deployed to a remote VPC.
+
+- Edit config locally from any operating system.
+- Use `just sync` to copy config over to local NixOs system (hosted on LAN, could be within Proxmox or just a plain installation).
+- Use `just build` to compile the new config on the local NixOs system.
+- Test the local NixOs to make sure the config has been successful.
+- Once it is successful locally, repeat the steps for remote NixOs in a VPC (hetzner or otherwise). 
+  - Why build it twice? Well, one could go straight for the remote VPC, but I prefer going for local first to avoid the `ssh` latency while iterating on the config.
+  - Alternatively if the remote machine does not have the resources to handle `nixos-rebuild switch`, one could upload the finished build from local NixOs to remote NixOs with `nix-copy-closure` (run from the local) + `"$SERVER_PROFILE/bin/switch-to-configuration switch"` (run from the remote). These commands are complex and reading the manual is going to be a requisite to use them properly.
+
